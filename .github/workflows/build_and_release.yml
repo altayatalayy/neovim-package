@@ -19,7 +19,7 @@ jobs:
 
       - name: Build Docker image (Ubuntu 18.04)
         run: |
-          docker build -f ubuntu18/Dockerfile --target test -t neovim-package-18 .
+          docker build -f ubuntu18/Dockerfile --target test -t neovim-package-18 ./ubuntu18
 
       - name: Copy .deb package from Docker container (Ubuntu 18.04)
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build Docker image (Ubuntu 22.04)
         run: |
-          docker build -f ubuntu22/Dockerfile --target test -t neovim-package-22 .
+          docker build -f ubuntu22/Dockerfile --target test -t neovim-package-22 ./ubuntu22
 
       - name: Copy .deb package from Docker container (Ubuntu 22.04)
         run: |
