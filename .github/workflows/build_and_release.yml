@@ -3,11 +3,8 @@ name: Build and Release
 
 on:
   push:
-    branches:
-      - master
-    paths-ignore:
-      - '.gitignore'
-      - 'README.md'
+    tags:
+      - "*"
 
 jobs:
   build_and_test_18:
