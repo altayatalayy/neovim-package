@@ -1,0 +1,68 @@
+---
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '.gitignore'
+      - 'README.md'
+
+jobs:
+  build_and_test_18:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image (Ubuntu 18.04)
+        run: |
+          docker build -f ubuntu18/Dockerfile --target test -t neovim-package-18 .
+
+      - name: Copy .deb package from Docker container (Ubuntu 18.04)
+        run: |
+          docker create --name temp_container_18 neovim-package-18
+          docker cp temp_container_18:/usr/src/neovim/build/*.deb ./neovim-18.deb
+
+  build_and_test_22:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image (Ubuntu 22.04)
+        run: |
+          docker build -f ubuntu22/Dockerfile --target test -t neovim-package-22 .
+
+      - name: Copy .deb package from Docker container (Ubuntu 22.04)
+        run: |
+          docker create --name temp_container_22 neovim-package-22
+          docker cp temp_container_22:/usr/src/*.deb ./neovim-22.deb
+
+  release:
+    needs: [build_and_test_18, build_and_test_22]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up GitHub CLI
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gh
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          TAG_NAME=$(git tag -l --points-at HEAD)
+          gh auth login --with-token <<< "${GH_TOKEN}"
+          gh release create $TAG_NAME \
+            ./neovim-18.deb \
+            ./neovim-22.deb \
+            -t $TAG_NAME \
+            -n "Release $TAG_NAME"

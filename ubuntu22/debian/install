@@ -1,0 +1,4 @@
+nvim-linux64/bin/* usr/bin
+nvim-linux64/lib/* usr/lib
+nvim-linux64/man/* usr/share/man
+nvim-linux64/share/* usr/share
