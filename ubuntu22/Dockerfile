@@ -52,5 +52,8 @@ RUN dpkg -i *.deb
 # Test if neovim can be run
 RUN nvim --version
 
+# Rename the .deb file
+RUN mv /usr/src/neovim_test/*.deb /usr/src/neovim_test/nvim-linux64.deb
+
 # Set the default command to run when starting the container
 CMD ["/bin/bash"]

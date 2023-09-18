@@ -24,7 +24,7 @@ jobs:
       - name: Copy .deb package from Docker container (Ubuntu 18.04)
         run: |
           docker create --name temp_container_18 neovim-package-18
-          docker cp temp_container_18:/usr/src/neovim/build/*.deb ./neovim-18.deb
+          docker cp temp_container_18:/usr/src/neovim_test/nvim-linux64.deb ./neovim-18.deb
 
   build_and_test_22:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
       - name: Copy .deb package from Docker container (Ubuntu 22.04)
         run: |
           docker create --name temp_container_22 neovim-package-22
-          docker cp temp_container_22:/usr/src/*.deb ./neovim-22.deb
+          docker cp temp_container_22:/usr/src/neovim_test/nvim-linux64.deb ./neovim-22.deb
 
   release:
     needs: [build_and_test_18, build_and_test_22]

@@ -1,0 +1,5 @@
+neovim (0.9.2) unstable; urgency=medium
+
+  * Initial release (Closes: #XXXXXX) # Replace XXXXXX with the bug number, if applicable
+
+ -- Your Name <you@example.com>  Sun, 11 Sep 2023 12:34:56 +0000
