@@ -35,7 +35,7 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx build --push --tag altayatalay/neovim-builder:latest \
-            --cache-from type=registry,ref=altayatalay/neovim-builder:cache \
+            --cache-from type=registry,ref=altayatalay/neovim-builder:latest \
             --cache-to type=inline,mode=max \
             --file nvim.Dockerfile .
 
@@ -50,7 +50,7 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx build --push --tag altayatalay/tmux-builder:latest \
-            --cache-from type=registry,ref=altayatalay/tmux-builder:cache \
+            --cache-from type=registry,ref=altayatalay/tmux-builder:latest \
             --cache-to type=inline,mode=max \
             --file tmux.Dockerfile .
 
