@@ -31,35 +31,36 @@ jobs:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
-      - name: Build Docker images and extract artifacts (Neovim)
+      - name: Build and push Neovim image for caching
         run: |
-          docker buildx build --load --tag altayatalay/neovim-builder:latest \
-            --cache-from type=registry,ref=altayatalay/neovim-builder:cache \
-            --cache-to type=inline,mode=max \
-            --output type=local,dest=./neovim-artifacts \
-            --file nvim.Dockerfile .
-
-      - name: Rebuild and push Neovim image for caching
-        run: |
+          docker buildx create --use
           docker buildx build --push --tag altayatalay/neovim-builder:latest \
             --cache-from type=registry,ref=altayatalay/neovim-builder:cache \
             --cache-to type=inline,mode=max \
             --file nvim.Dockerfile .
 
-      - name: Build Docker images and extract artifacts (tmux)
+      - name: Extract artifacts from Neovim image
         run: |
-          docker buildx build --load --tag altayatalay/tmux-builder:latest \
-            --cache-from type=registry,ref=altayatalay/tmux-builder:cache \
-            --cache-to type=inline,mode=max \
-            --output type=local,dest=./tmux-artifacts \
-            --file tmux.Dockerfile .
+          docker create --name temp_neovim altayatalay/neovim-builder:latest
+          docker cp temp_neovim:/app ./neovim-artifacts
+          docker rm temp_neovim
 
-      - name: Rebuild and push tmux image for caching
+
+      - name: Build and push tmux image for caching
         run: |
+          docker buildx create --use
           docker buildx build --push --tag altayatalay/tmux-builder:latest \
             --cache-from type=registry,ref=altayatalay/tmux-builder:cache \
             --cache-to type=inline,mode=max \
             --file tmux.Dockerfile .
+
+      # Extract artifacts from tmux image
+      - name: Extract artifacts from tmux image
+        run: |
+          docker create --name temp_tmux altayatalay/tmux-builder:latest
+          mkdir -p tmux-artifacts
+          docker cp temp_tmux:/app ./tmux-artifacts
+          docker rm temp_tmux
 
       - name: Create GitHub Release and upload artifacts
         uses: softprops/action-gh-release@v2
