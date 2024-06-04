@@ -1,7 +1,7 @@
 # Download stage
 FROM alpine as downloader
 WORKDIR /tmp
-ADD https://github.com/neovim/neovim/archive/refs/tags/v0.9.5.tar.gz nvim.tar.gz
+ADD https://github.com/neovim/neovim/archive/refs/tags/v0.10.0.tar.gz nvim.tar.gz
 
 # Build stage with Ubuntu 22.04
 FROM ubuntu:23.10 as builder23
